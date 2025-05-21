@@ -282,7 +282,7 @@ cfg_1 = """
     B -> babC | abaC | bbbC \n
     C -> aC | bC | bbC | aaC | D \n
     D -> bbE | aaE | abaE \n
-    F -> aaaF | babF | bbaF | ^
+    E -> aaaE | babE | bbaE | ^
 """
 
 # CFG for (1+0)* (11+00+101+010) (11+00)* (11+00+0+1) (1+0+11) (11+00)* (101+000+111) (1+0)* (101+000+111+001+100) (11+00+1+0)*
@@ -400,39 +400,42 @@ def validate_dfa(dfa, string):
 
 
 # Generate validation animation
+
+
 def animate_dfa_validation(dfa, state_checks):
-    dot = generate_dfa_visualization(dfa)  # Generate the DFA visualization
+    dot = generate_dfa_visualization(dfa)  # Initial DFA visualization
+
     graph = st.graphviz_chart(
         dot.source,
         use_container_width=True,
-    )  # Create a Streamlit Graphviz component
+    )
 
-    # Iterate through each state in state_checks
+    previous_state = None  # Track previously highlighted state
+
     for state_check in state_checks:
         state, is_valid = state_check
 
-        time.sleep(1)  # Add a delay for visualization purposes
+        time.sleep(1)  # Delay for animation
+
+        # Before coloring new state, reset previous state's fill color back to default
+        if previous_state is not None:
+            # Reset previous state color to white (or no fill)
+            shape = "doublecircle" if previous_state in dfa["end_states"] else "circle"
+            dot.node(previous_state, style="", fillcolor="", shape=shape)
 
         if is_valid and state in dfa["end_states"]:
-            dot.node(state, style="filled", fillcolor="green")  # Set end state to green
-            graph.graphviz_chart(
-                dot.source, use_container_width=True
-            )  # Render the updated visualization
-
+            # Current accept state: color green
+            dot.node(state, style="filled", fillcolor="green", shape="doublecircle")
         elif not is_valid:
-            dot.node(state, style="filled", fillcolor="red")  # Set invalid state to red
-            graph.graphviz_chart(
-                dot.source, use_container_width=True
-            )  # Render the updated visualization
-
+            # Invalid state: color red
+            dot.node(state, style="filled", fillcolor="red")
         else:
+            # Intermediate state: color orange briefly
             dot.node(state, style="filled", fillcolor="orange")
             graph.graphviz_chart(dot.source, use_container_width=True)
-
             time.sleep(0.5)
-            dot.node(
-                state, style="filled", fillcolor="white"
-            )  # Set previous state back to white
-            graph.graphviz_chart(
-                dot.source, use_container_width=True
-            )  # Render the updated visualization
+            dot.node(state, style="", fillcolor="", shape="circle")  # Reset to normal
+
+        graph.graphviz_chart(dot.source, use_container_width=True)
+
+        previous_state = state
