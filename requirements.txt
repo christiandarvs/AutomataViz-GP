@@ -1,0 +1,2 @@
+graphviz==0.20.3
+streamlit==1.45.1
