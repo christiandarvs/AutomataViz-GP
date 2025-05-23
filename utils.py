@@ -278,11 +278,12 @@ dfa_2 = {
 # CFG for (a+b)* (aa+bb) (aa+bb)* (ab+ba+aba) (bab+aba+bbb) (a+b+bb+aa)* (bb+aa+aba) (aaa+bab+bba) (aaa+bab+bba)*
 cfg_1 = """
     S -> aS | bS | aaA | bbA \n
-    A -> AAa | bbA | abB | baB | abaB \n
+    A -> aaA | bbA | abB | baB | abaB \n
     B -> babC | abaC | bbbC \n
     C -> aC | bC | bbC | aaC | D \n
     D -> bbE | aaE | abaE \n
-    E -> aaaE | babE | bbaE | ^
+    E -> aaaF | babF | bbaF \n
+    F -> aaaF | babF | bbaF | ^ 
 """
 
 # CFG for (1+0)* (11+00+101+010) (11+00)* (11+00+0+1) (1+0+11) (11+00)* (101+000+111) (1+0)* (101+000+111+001+100) (11+00+1+0)*
